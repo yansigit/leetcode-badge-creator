@@ -1,6 +1,7 @@
 {
   "name": "leetcode-badge-maker",
   "version": "1.0.0",
+  "config": { "puppeteer_download_path": "./node_modules/puppeteer/.local-chromium" },
   "dependencies": {
     "express": "^4.17.1",
     "node": "^15.4.0",
