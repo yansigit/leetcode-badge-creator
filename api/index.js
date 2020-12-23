@@ -1,15 +1,15 @@
 const path = require("path");
 const app = require('express')();
-const fs = require('fs')
+// const fs = require('fs')
 
-const badge_filepath = path.join(__dirname, "badge.png")
+// const badge_filepath = path.join(__dirname, "badge.png")
 const error_filepath = path.join(__dirname, "no-profile-available.png")
 
 const getBadge = async (username) => {
 
-    if (fs.existsSync(badge_filepath)) {
-        fs.unlinkSync(badge_filepath);
-    }
+    // if (fs.existsSync(badge_filepath)) {
+    //     fs.unlinkSync(badge_filepath);
+    // }
 
     let chromium = {};
     let puppeteer;
@@ -53,9 +53,9 @@ const getBadge = async (username) => {
         await page.waitForSelector('div.ant-card-body');
 
         const el = await page.$$('div.ant-card-body');
-        await el[1].screenshot({path: 'badge.png'});
+        const buffer = await el[1].screenshot();
         await browser.close();
-        return true
+        return buffer
     })();
 
 }
@@ -63,11 +63,15 @@ const getBadge = async (username) => {
 app.get('/api/leetcode/:username', async (req, res) => {
     const { username } = req.params;
     const result = await getBadge(username);
-    console.log(result)
-    if (result === true) {
-        res.status(200).sendFile(badge_filepath, ()=>{console.log('badge output')});
+    // console.log(result)
+    if (result === false) {
+        res.status(200).sendFile(error_filepath, ()=>{console.log('badge output')});
     } else {
-        res.status(200).sendFile(error_filepath, ()=>{console.log('error output')});
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': result.length
+        });
+        res.status(200).end(result);
     }
 });
 
