@@ -11,7 +11,7 @@
   "routes": [
     {
       "src": "/api/leetcode/(.*)",
-      "dest": "app/index.js"
+      "dest": "api/index.js"
     }
   ]
 }
