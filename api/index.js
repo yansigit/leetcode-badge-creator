@@ -42,7 +42,8 @@ const getBadge = async (username) => {
         }
 
         const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4230.1 Safari/537.36');
+        await page.setViewport({ width: 500, height: 768});
+        await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/80.0.3987.95 Mobile/15E148 Safari/604.1');
 
         const response = await page.goto(`https://leetcode.com/${username}`);
 
@@ -50,9 +51,9 @@ const getBadge = async (username) => {
             return false
         }
 
-        await page.waitForSelector('div.ant-card-body');
+        await page.waitForSelector('div.ant-card-small');
 
-        const el = await page.$$('div.ant-card-body');
+        const el = await page.$$('div.ant-card-small');
         const buffer = await el[1].screenshot();
         await browser.close();
         return buffer
@@ -75,8 +76,10 @@ app.get('/api/leetcode/:username', async (req, res) => {
     }
 });
 
-// module.exports = app;
-
-app.listen(80, () => {
-    console.log(`Example app listening at http://localhost`)
-})
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    module.exports = app;
+} else {
+    app.listen(80, () => {
+        console.log(`Example app listening at http://localhost`)
+    })
+}
