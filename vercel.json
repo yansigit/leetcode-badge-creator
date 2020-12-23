@@ -8,10 +8,5 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/leetcode/(.*)",
-      "dest": "api/index.js"
-    }
-  ]
+  "rewrites": [{ "source": "/api/leetcode/(.*)", "destination": "/api" }]
 }
